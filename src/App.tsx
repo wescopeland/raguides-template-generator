@@ -59,6 +59,7 @@ function App(): ReactElement {
       <input
         className="p-2 border border-neutral-300 rounded"
         placeholder="Your RA Web API Key"
+        type="password"
         value={webApiKey}
         onChange={(e) => setWebApiKey(e.target.value)}
       />
