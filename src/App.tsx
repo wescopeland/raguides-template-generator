@@ -1,4 +1,4 @@
-import React, { ReactElement, useState } from "react";
+import React, { ReactElement, useState, FC } from "react";
 import cc from "classcat";
 import {
   buildAuthorization,
@@ -39,6 +39,7 @@ function App(): ReactElement {
     return (
       <div className="bg-neutral-100 p-10 max-h-screen overflow-scroll">
         <pre>{apiCallResult}</pre>
+        <Watermark />
       </div>
     );
   }
@@ -88,6 +89,8 @@ function App(): ReactElement {
       >
         {formState === "loading" ? "Loading..." : "Generate"}
       </button>
+
+      <Watermark />
     </div>
   );
 }
@@ -114,6 +117,20 @@ ${achievement.description}
   }
 
   return markdown;
+};
+
+const Watermark: FC = () => {
+  return (
+    <div className="text-blue-700 underline font-mono absolute bottom-2 right-2">
+      <a
+        href="https://github.com/wescopeland/raguides-template-generator"
+        target="_blank"
+        rel="noferrer"
+      >
+        GitHub &gt;
+      </a>
+    </div>
+  );
 };
 
 export default App;
