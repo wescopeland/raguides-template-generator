@@ -20,12 +20,16 @@ function App(): ReactElement {
 
     const authorization = buildAuthorization({ userName, webApiKey });
 
-    const gameExtended = await getGameExtended(authorization, { gameId });
-    const markdown = buildMarkdown(gameExtended.achievements);
+    try {
+      const gameExtended = await getGameExtended(authorization, { gameId });
+      const markdown = buildMarkdown(gameExtended.achievements);
 
-    setApiCallResult(markdown);
-    console.log(markdown);
-    setFormState("success");
+      setApiCallResult(markdown);
+      setFormState("success");
+    } catch (error) {
+      console.error(error);
+      setFormState("error");
+    }
   };
 
   const isSubmitDisabled =
