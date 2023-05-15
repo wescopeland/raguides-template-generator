@@ -1,16 +1,12 @@
 module.exports = {
-  extends: [
-    'eslint:recommended',
-    'plugin:@typescript-eslint/recommended',
-    'plugin:prettier/recommended'
-  ],
+  extends: ["eslint:recommended", "plugin:@typescript-eslint/recommended"],
   env: {
     node: true,
     mocha: true,
-    es6: true
+    es6: true,
   },
-  plugins: ['@typescript-eslint', 'prettier'],
+  plugins: ["@typescript-eslint", "prettier"],
   parserOptions: {
-    parser: '@typescript-eslint/parser'
-  }
-}
+    parser: "@typescript-eslint/parser",
+  },
+};

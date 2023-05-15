@@ -1,70 +1,114 @@
-import React, { ReactElement, useState } from 'react'
-import logo from './logo.svg'
-import viteLogo from './vite.svg'
-import tailwindLogo from './tailwind.svg'
+import React, { ReactElement, useState } from "react";
+import cc from "classcat";
+import {
+  buildAuthorization,
+  GameExtendedAchievementEntity,
+  getGameExtended,
+} from "@retroachievements/api";
 
 function App(): ReactElement {
-  const [count, setCount] = useState(0)
+  const [userName, setUserName] = useState("");
+  const [webApiKey, setWebApiKey] = useState("");
+  const [gameId, setGameId] = useState("");
+  const [formState, setFormState] = useState<
+    "idle" | "loading" | "error" | "success"
+  >("idle");
+  const [apiCallResult, setApiCallResult] = useState<string | null>(null);
+
+  const handleSubmit = async () => {
+    setFormState("loading");
+
+    const authorization = buildAuthorization({ userName, webApiKey });
+
+    const gameExtended = await getGameExtended(authorization, { gameId });
+    const markdown = buildMarkdown(gameExtended.achievements);
+
+    setApiCallResult(markdown);
+    console.log(markdown);
+    setFormState("success");
+  };
+
+  const isSubmitDisabled =
+    !userName || !webApiKey || !gameId || formState === "loading";
+
+  if (apiCallResult) {
+    return (
+      <div className="bg-neutral-100 p-10 max-h-screen overflow-scroll">
+        <pre>{apiCallResult}</pre>
+      </div>
+    );
+  }
 
   return (
-    <div className="p-20 border shadow-xl border-gray-50 rounded-xl">
-      <header>
-        <div className="flex justify-center">
-          <img src={viteLogo} className="w-32 h-32" alt="vite logo" />
-          <img src={logo} className="w-32 h-32" alt="React logo" />
-          <img
-            src={tailwindLogo}
-            className="w-32 h-32"
-            alt="Tailwind CSS logo"
-          />
-        </div>
-        <p className="pb-3 text-2xl">Hello Vite + React + Tailwind CSS!</p>
-        <p>
-          <button
-            className="pt-1 pb-1 pl-2 pr-2 text-sm text-purple-100 bg-purple-400 rounded"
-            onClick={() => setCount((count) => count + 1)}
-          >
-            count is: {count}
-          </button>
+    <div className="p-20 border shadow-xl border-gray-50 rounded-xl flex flex-col gap-y-2">
+      {formState === "error" && (
+        <p className="text-red-600">
+          Something went wrong. Check your API key.
         </p>
-        <p className="pt-3 pb-3">
-          Edit{' '}
-          <code className="border border-1 pl-1 pr-1 pb-0.5 pt-0.5 rounded border-purple-400 font-mono text-sm bg-purple-100 text-purple-900">
-            src/App.tsx
-          </code>{' '}
-          and save to test HMR updates.
-        </p>
-        <p>
-          <a
-            className="text-purple-400 underline"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-          {' | '}
-          <a
-            className="text-purple-400 underline"
-            href="https://vitejs.dev/guide/features.html"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Vite Docs
-          </a>
-          {' | '}
-          <a
-            className="text-purple-400 underline"
-            href="https://tailwindcss.com/docs"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Tailwind CSS Docs
-          </a>
-        </p>
-      </header>
+      )}
+
+      <p className="mb-4">Generate RAGuide Achievement Blocks</p>
+
+      <input
+        className="p-2 border border-neutral-300 rounded"
+        placeholder="Your RA Username"
+        value={userName}
+        onChange={(e) => setUserName(e.target.value)}
+      />
+
+      <input
+        className="p-2 border border-neutral-300 rounded"
+        placeholder="Your RA Web API Key"
+        value={webApiKey}
+        onChange={(e) => setWebApiKey(e.target.value)}
+      />
+
+      <input
+        className="p-2 border border-neutral-300 rounded"
+        placeholder="RA Game ID"
+        type="number"
+        value={gameId}
+        onChange={(e) => setGameId(e.target.value)}
+      />
+
+      <button
+        className={cc([
+          "mt-4 p-4 bg-slate-500 rounded-lg  transition active:scale-95",
+          isSubmitDisabled
+            ? "bg-neutral-300 text-neutral-400"
+            : "bg-yellow-500 text-black",
+        ])}
+        onClick={handleSubmit}
+        disabled={isSubmitDisabled}
+      >
+        {formState === "loading" ? "Loading..." : "Generate"}
+      </button>
     </div>
-  )
+  );
 }
 
-export default App
+const buildMarkdown = (
+  achievements: Record<number, GameExtendedAchievementEntity>
+) => {
+  let markdown = "";
+
+  for (const achievement of Object.values(achievements)) {
+    markdown += `
+<img align="left" width="72" height="72" src="https://media.retroachievements.org/Badge/${
+      achievement.badgeName
+    }">
+
+\`\`\`
+${achievement.title} [${achievement.points} ${
+      achievement.points === 1 ? "Point" : "Points"
+    }]
+${achievement.description}
+\`\`\`
+
+    `;
+  }
+
+  return markdown;
+};
+
+export default App;
