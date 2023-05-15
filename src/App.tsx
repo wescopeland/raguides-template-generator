@@ -121,8 +121,17 @@ ${achievement.description}
 
 const Watermark: FC = () => {
   return (
-    <div className="text-blue-700 underline font-mono absolute bottom-2 right-2">
+    <div className="select-none text-sm font-mono absolute bottom-2 right-2">
+      Built by{" "}
       <a
+        className="text-blue-700 underline"
+        href="https://retroachievements.org/user/WCopeland"
+      >
+        WCopeland
+      </a>{" "}
+      |{" "}
+      <a
+        className="text-blue-700 underline"
         href="https://github.com/wescopeland/raguides-template-generator"
         target="_blank"
         rel="noferrer"
