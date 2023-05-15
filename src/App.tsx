@@ -101,7 +101,7 @@ const buildMarkdown = (
     markdown += `
 <img align="left" width="72" height="72" src="https://media.retroachievements.org/Badge/${
       achievement.badgeName
-    }">
+    }.png">
 
 \`\`\`
 ${achievement.title} [${achievement.points} ${
