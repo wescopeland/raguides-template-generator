@@ -102,16 +102,12 @@ const buildMarkdown = (
 
   for (const achievement of Object.values(achievements)) {
     markdown += `
-<img align="left" width="72" height="72" src="https://media.retroachievements.org/Badge/${
-      achievement.badgeName
-    }.png">
+<img align="left" width="72" height="72" src="https://media.retroachievements.org/Badge/${achievement.badgeName}.png">
 
-\`\`\`
-${achievement.title} [${achievement.points} ${
-      achievement.points === 1 ? "Point" : "Points"
-    }]
-${achievement.description}
-\`\`\`
+<big><pre>
+[${achievement.title} (${achievement.points})](https://retroachievements.org/achievement/${achievement.id})
+_${achievement.description}_
+</pre></big>
 
     `;
   }
